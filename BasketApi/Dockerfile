@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 WORKDIR /src
 
 # Copy solution and all project files for restore caching
-COPY ["BasketApi.sln", "."]
 COPY ["BasketApi/BasketApi.csproj", "BasketApi/"]
 COPY ["modules/Base-Api/BaseApi/BaseApi.csproj", "modules/Base-Api/BaseApi/"]
 
-# Restore all projects together
-RUN dotnet restore "BasketApi.sln"
+# Restore dependency first, then the app
+RUN dotnet restore "modules/Base-Api/BaseApi/BaseApi.csproj"
+RUN dotnet restore "BasketApi/BasketApi.csproj"
 
 # Copy full source
 COPY . .
