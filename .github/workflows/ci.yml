@@ -34,7 +34,6 @@ jobs:
       - name: Restore dependencies
         run: |
           git submodule update --init --recursive
-          ls -R modules/
           dotnet restore
 
       - name: Build
@@ -51,7 +50,8 @@ jobs:
     needs: build-and-test
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development'
     runs-on: ubuntu-latest
-    environment: development
+    environment:
+      name: development
     steps:
       - uses: actions/checkout@v4
         with:
@@ -64,7 +64,8 @@ jobs:
     needs: build-and-test
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
     runs-on: ubuntu-latest
-    environment: staging
+    environment:
+      name: staging
     steps:
       - uses: actions/checkout@v4
         with:
@@ -77,7 +78,8 @@ jobs:
     needs: build-and-test
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
     runs-on: ubuntu-latest
-    environment: production
+    environment:
+      name: production
     steps:
       - uses: actions/checkout@v4
         with:
