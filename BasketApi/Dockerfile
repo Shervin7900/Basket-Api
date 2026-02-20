@@ -11,10 +11,8 @@ RUN dotnet restore "BasketApi/BasketApi.csproj"
 
 # Copy source and build
 COPY . .
-RUN ls -R /src/modules/Base-Api/BaseApi
 WORKDIR "/src/BasketApi"
-RUN dotnet build "BasketApi.csproj" -c Release
-RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-restore
+RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime Stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
