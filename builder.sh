@@ -1,8 +1,11 @@
 #!/bin/bash
 set -e
 
-ENV=${1:-dev}
+ENV=${1:-development}
 ACTION=${2:-none}
+
+# Normalize ENV
+if [ "$ENV" == "dev" ]; then ENV="development"; fi
 
 echo "========================================"
 echo "  Basket API Build System"
@@ -15,15 +18,15 @@ if [ ! -f "modules/Base-Api/BaseApi/BaseApi.csproj" ]; then
     exit 1
 fi
 
-echo "[1/3] Building projects..."
-dotnet build BasketApi/BasketApi.csproj -c Release
+echo "[1/3] Building solution..."
+dotnet build BasketApi.sln -c Release
 
 echo "[2/3] Building Docker Image ($ENV)..."
-docker build -t basket-api:$ENV -f BasketApi/Dockerfile .
+docker compose -f docker-compose.yml -f docker-compose.$ENV.yml build
 
 if [ "$ACTION" == "up" ]; then
     echo "[3/3] Starting stack with Docker Compose..."
-    docker-compose up -d
+    docker compose -f docker-compose.yml -f docker-compose.$ENV.yml up -d
 else
     echo "[3/3] Build complete. Use './builder.sh $ENV up' to start services."
 fi
