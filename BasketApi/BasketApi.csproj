@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\modules\Base-Api\BaseApi\BaseApi.csproj" />
+    <ProjectReference Include="../modules/Base-Api/BaseApi/BaseApi.csproj" />
   </ItemGroup>
 
 </Project>

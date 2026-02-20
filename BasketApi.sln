@@ -1,21 +1,20 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi", "BasketApi\BasketApi.csproj", "{EBCC5CE1-3F66-411D-A1B7-893876089771}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi", "BasketApi/BasketApi.csproj", "{EBCC5CE1-3F66-411D-A1B7-893876089771}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi.UnitTests", "BasketApi.UnitTests\BasketApi.UnitTests.csproj", "{2EABCE0A-B0C6-4514-891E-B6EEB8D22E84}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi.UnitTests", "BasketApi.UnitTests/BasketApi.UnitTests.csproj", "{2EABCE0A-B0C6-4514-891E-B6EEB8D22E84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi.IntegrationTests", "BasketApi.IntegrationTests\BasketApi.IntegrationTests.csproj", "{DF24129D-E9BE-410C-8D9D-A42BFE1EFCAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi.IntegrationTests", "BasketApi.IntegrationTests/BasketApi.IntegrationTests.csproj", "{DF24129D-E9BE-410C-8D9D-A42BFE1EFCAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi.E2ETests", "BasketApi.E2ETests\BasketApi.E2ETests.csproj", "{1014B5C7-6988-4582-9DE5-F7DF69F5EAE9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasketApi.E2ETests", "BasketApi.E2ETests/BasketApi.E2ETests.csproj", "{1014B5C7-6988-4582-9DE5-F7DF69F5EAE9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{CA253913-39DE-BFD0-C9A3-4B7EC6FBDF17}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base-Api", "Base-Api", "{B3C51B37-4ED9-C270-9AA1-A29D8E397588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseApi", "modules\Base-Api\BaseApi\BaseApi.csproj", "{B2AF6C67-4C1A-4A0F-A746-4F16B21181E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseApi", "modules/Base-Api/BaseApi/BaseApi.csproj", "{B2AF6C67-4C1A-4A0F-A746-4F16B21181E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
