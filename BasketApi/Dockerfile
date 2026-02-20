@@ -7,7 +7,7 @@ COPY . .
 
 # Build and publish (handles restore internally)
 WORKDIR "/src/BasketApi"
-RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=false --verbosity detailed 2>&1
 
 # Runtime Stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
