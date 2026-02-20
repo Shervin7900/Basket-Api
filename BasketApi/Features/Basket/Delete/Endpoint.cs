@@ -2,6 +2,7 @@ namespace BasketApi.Features.Basket.Delete;
 
 using FastEndpoints;
 using BasketApi.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 public class Request
 {
@@ -9,11 +10,11 @@ public class Request
     public string? ProductId { get; set; }
 }
 
-public class Endpoint : Endpoint<Request>
+public class DeleteBasketEndpoint : FastEndpoints.Endpoint<Request>
 {
     private readonly IBasketRepository _repository;
 
-    public Endpoint(IBasketRepository repository)
+    public DeleteBasketEndpoint(IBasketRepository repository)
     {
         _repository = repository;
     }
@@ -40,6 +41,6 @@ public class Endpoint : Endpoint<Request>
             }
         }
 
-        await this.SendNoContentAsync(ct);
+        await this.HttpContext.Response.SendNoContentAsync(ct);
     }
 }

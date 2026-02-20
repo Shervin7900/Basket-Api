@@ -4,12 +4,14 @@ using FastEndpoints;
 using BasketApi.Domain.Entities;
 using BasketApi.Domain.Interfaces;
 using BasketApi.Features.Basket.Models;
+using Microsoft.AspNetCore.Http;
+using FluentValidation.Results;
 
-public class Endpoint : Endpoint<Request, BasketResponse>
+public class UpdateBasketEndpoint : FastEndpoints.Endpoint<Request, BasketResponse>
 {
     private readonly IBasketRepository _repository;
 
-    public Endpoint(IBasketRepository repository)
+    public UpdateBasketEndpoint(IBasketRepository repository)
     {
         _repository = repository;
     }
@@ -33,7 +35,7 @@ public class Endpoint : Endpoint<Request, BasketResponse>
             case "add":
                 if (string.IsNullOrEmpty(req.ProductName) || req.Price == null)
                 {
-                    await this.SendErrorsAsync(400, ct);
+                    await this.HttpContext.Response.SendErrorsAsync(new List<ValidationFailure>(), 400, cancellation: ct);
                     return;
                 }
                 basket.AddItem(req.ProductId, req.ProductName, req.Price.Value, req.Quantity);
@@ -45,7 +47,7 @@ public class Endpoint : Endpoint<Request, BasketResponse>
                 basket.DecreaseQuantity(req.ProductId, req.Quantity);
                 break;
             default:
-                await this.SendErrorsAsync(400, ct);
+                await this.HttpContext.Response.SendErrorsAsync(new List<ValidationFailure>(), 400, cancellation: ct);
                 return;
         }
 
@@ -65,6 +67,6 @@ public class Endpoint : Endpoint<Request, BasketResponse>
             TotalPrice = basket.TotalPrice
         };
 
-        await this.SendAsync(response, cancellation: ct);
+        await this.HttpContext.Response.SendAsync(response, 200, null, ct);
     }
 }

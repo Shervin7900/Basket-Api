@@ -1,27 +1,34 @@
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
-ARG BUILD_CONFIGURATION=Release
+# Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 WORKDIR /src
 
-# Copy projects and restore
+# Copy project files for caching
 COPY ["BasketApi/BasketApi.csproj", "BasketApi/"]
 COPY ["modules/Base-Api/BaseApi/BaseApi.csproj", "modules/Base-Api/BaseApi/"]
+
+# Restore dependencies
 RUN dotnet restore "BasketApi/BasketApi.csproj"
 
-# Copy everything else and build
+# Copy source and build
 COPY . .
 WORKDIR "/src/BasketApi"
-RUN dotnet build "BasketApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "BasketApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+# Runtime Stage
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Non-root user for security
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
+# Copy artifacts
+COPY --from=build /app/publish .
+
+# Environment variables
+ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+EXPOSE 8080
+
 ENTRYPOINT ["dotnet", "BasketApi.dll"]

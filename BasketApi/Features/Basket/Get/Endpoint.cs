@@ -4,6 +4,7 @@ using FastEndpoints;
 using BasketApi.Domain.Entities;
 using BasketApi.Domain.Interfaces;
 using BasketApi.Features.Basket.Models;
+using Microsoft.AspNetCore.Http;
 
 public class Request
 {
@@ -11,11 +12,11 @@ public class Request
     public string? AnonymousId { get; set; }
 }
 
-public class Endpoint : Endpoint<Request, BasketResponse>
+public class GetBasketEndpoint : FastEndpoints.Endpoint<Request, BasketResponse>
 {
     private readonly IBasketRepository _repository;
 
-    public Endpoint(IBasketRepository repository)
+    public GetBasketEndpoint(IBasketRepository repository)
     {
         _repository = repository;
     }
@@ -44,7 +45,7 @@ public class Endpoint : Endpoint<Request, BasketResponse>
 
         if (basket == null)
         {
-            await this.SendAsync(new BasketResponse { BuyerId = req.BuyerId }, cancellation: ct);
+            await this.HttpContext.Response.SendAsync(new BasketResponse { BuyerId = req.BuyerId }, 200, null, ct);
             return;
         }
 
@@ -62,6 +63,6 @@ public class Endpoint : Endpoint<Request, BasketResponse>
             TotalPrice = basket.TotalPrice
         };
 
-        await this.SendAsync(response, cancellation: ct);
+        await this.HttpContext.Response.SendAsync(response, 200, null, ct);
     }
 }
