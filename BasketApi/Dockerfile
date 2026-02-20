@@ -2,20 +2,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 WORKDIR /src
 
-# Copy solution and all project files for restore caching
-COPY ["BasketApi/BasketApi.csproj", "BasketApi/"]
-COPY ["modules/Base-Api/BaseApi/BaseApi.csproj", "modules/Base-Api/BaseApi/"]
-
-# Restore dependency first, then the app
-RUN dotnet restore "modules/Base-Api/BaseApi/BaseApi.csproj"
-RUN dotnet restore "BasketApi/BasketApi.csproj"
-
-# Copy full source
+# Copy all source
 COPY . .
 
-# Build and publish
+# Build and publish (handles restore internally)
 WORKDIR "/src/BasketApi"
-RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-restore
+RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime Stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
