@@ -13,11 +13,13 @@ on:
         default: "staging"
         type: choice
         options:
+          - development
           - staging
           - production
 
 jobs:
   build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,17 +40,41 @@ jobs:
       - name: Test
         run: dotnet test --no-build --verbosity normal
 
-  deploy:
+  deploy-development:
+    name: Deploy to Development
     needs: build-and-test
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'development'
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'staging' }}
+    environment: development
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Build Docker Image
+        run: docker compose -f docker-compose.yml -f docker-compose.development.yml build
 
-      - name: Build Docker Image (Stage: ${{ github.event.inputs.environment || 'staging' }})
-        run: |
-          ENV=${{ github.event.inputs.environment || 'staging' }}
-          docker compose -f docker-compose.yml -f docker-compose.$ENV.yml build
+  deploy-staging:
+    name: Deploy to Staging
+    needs: build-and-test
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build Docker Image
+        run: docker compose -f docker-compose.yml -f docker-compose.staging.yml build
+
+  deploy-production:
+    name: Deploy to Production
+    needs: build-and-test
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build Docker Image
+        run: docker compose -f docker-compose.yml -f docker-compose.production.yml build
