@@ -1,0 +1,13 @@
+**/.git
+**/.gitignore
+**/.gitmodules
+**/bin
+**/obj
+**/out
+**/.vs
+**/.vscode
+**/.idea
+**/*.user
+**/*.userosscache
+**/*.sln.docstates
+**/nupkgs
