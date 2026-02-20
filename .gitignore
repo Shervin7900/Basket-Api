@@ -1,0 +1,17 @@
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.idea/
+.vscode/
+*.swp
+*.bak
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+modules/
+.gitmodules
