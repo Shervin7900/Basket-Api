@@ -1,30 +1,54 @@
-name: Basket API CI
+name: Basket API CI/CD
 
 on:
-    push:
-        branches: ["main"]
-    pull_request:
-        branches: ["main"]
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment to deploy to"
+        required: true
+        default: "staging"
+        type: choice
+        options:
+          - staging
+          - production
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  submodules: recursive
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
 
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v4
-              with:
-                  dotnet-version: 10.0.x
+      - name: Restore dependencies
+        run: dotnet restore
 
-            - name: Restore dependencies
-              run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
 
-            - name: Build
-              run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
 
-            - name: Test
-              run: dotnet test --no-build --verbosity normal
+  deploy:
+    needs: build-and-test
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build Docker Image (Stage: ${{ github.event.inputs.environment || 'staging' }})
+        run: |
+          ENV=${{ github.event.inputs.environment || 'staging' }}
+          docker compose -f docker-compose.yml -f docker-compose.$ENV.yml build

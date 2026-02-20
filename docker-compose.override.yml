@@ -1,0 +1,6 @@
+services:
+  basketapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8000:8080"

@@ -1,0 +1,11 @@
+services:
+  basketapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+    ports:
+      - "8001:8080"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M

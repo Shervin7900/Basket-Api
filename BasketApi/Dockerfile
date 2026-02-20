@@ -27,7 +27,7 @@ COPY --from=build /app/publish .
 
 # Environment variables
 ENV ASPNETCORE_URLS=http://+:8080
-ENV ASPNETCORE_ENVIRONMENT=Production
+# ENV ASPNETCORE_ENVIRONMENT=Production # Removed to allow runtime override
 
 EXPOSE 8080
 
