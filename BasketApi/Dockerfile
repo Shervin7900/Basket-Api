@@ -18,8 +18,7 @@ RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=f
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
 WORKDIR /app
 
-# Non-root user for security
-RUN addgroup -S app && adduser -S app -G app
+# Use built-in non-root user for security
 USER app
 
 # Copy artifacts
