@@ -40,6 +40,6 @@ public class Endpoint : Endpoint<Request>
             }
         }
 
-        await SendNoContentAsync(ct);
+        await this.SendNoContentAsync(ct);
     }
 }

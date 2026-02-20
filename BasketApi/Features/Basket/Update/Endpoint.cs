@@ -33,7 +33,7 @@ public class Endpoint : Endpoint<Request, BasketResponse>
             case "add":
                 if (string.IsNullOrEmpty(req.ProductName) || req.Price == null)
                 {
-                    await SendErrorsAsync(400, ct);
+                    await this.SendErrorsAsync(400, ct);
                     return;
                 }
                 basket.AddItem(req.ProductId, req.ProductName, req.Price.Value, req.Quantity);
@@ -45,7 +45,7 @@ public class Endpoint : Endpoint<Request, BasketResponse>
                 basket.DecreaseQuantity(req.ProductId, req.Quantity);
                 break;
             default:
-                await SendErrorsAsync(400, ct);
+                await this.SendErrorsAsync(400, ct);
                 return;
         }
 
@@ -65,6 +65,6 @@ public class Endpoint : Endpoint<Request, BasketResponse>
             TotalPrice = basket.TotalPrice
         };
 
-        await SendAsync(response, cancellation: ct);
+        await this.SendAsync(response, cancellation: ct);
     }
 }

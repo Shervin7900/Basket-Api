@@ -1,6 +1,7 @@
 namespace BasketApi.Features.Basket.Get;
 
 using FastEndpoints;
+using BasketApi.Domain.Entities;
 using BasketApi.Domain.Interfaces;
 using BasketApi.Features.Basket.Models;
 
@@ -43,7 +44,7 @@ public class Endpoint : Endpoint<Request, BasketResponse>
 
         if (basket == null)
         {
-            await SendAsync(new BasketResponse { BuyerId = req.BuyerId }, cancellation: ct);
+            await this.SendAsync(new BasketResponse { BuyerId = req.BuyerId }, cancellation: ct);
             return;
         }
 
@@ -61,6 +62,6 @@ public class Endpoint : Endpoint<Request, BasketResponse>
             TotalPrice = basket.TotalPrice
         };
 
-        await SendAsync(response, cancellation: ct);
+        await this.SendAsync(response, cancellation: ct);
     }
 }

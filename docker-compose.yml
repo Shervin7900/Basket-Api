@@ -1,20 +1,23 @@
 services:
   basketapi:
     build:
-      context: ./BasketApi
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: BasketApi/Dockerfile
     ports:
       - "8000:8080"
       - "8001:8081"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BasketApi;User Id=sa;Password=Password123!;TrustServerCertificate=True
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Redis=redis:6379
-      - ConnectionStrings__Mongo=mongodb://mongodb:27017/BasketApi
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BasketApi;User Id=sa;Password=Password123!;TrustServerCertificate=True
     depends_on:
-      - sqlserver
       - redis
-      - mongodb
+      - sqlserver
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -23,15 +26,3 @@ services:
       - MSSQL_SA_PASSWORD=Password123!
     ports:
       - "1433:1433"
-
-  redis:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-
-  mongodb:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_DATABASE=BasketApi
