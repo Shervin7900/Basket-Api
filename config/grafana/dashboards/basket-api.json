@@ -1,0 +1,326 @@
+{
+    "id": null,
+    "uid": "basket-api-overview",
+    "title": "Basket API - Observability",
+    "tags": [
+        "basket-api",
+        "dotnet"
+    ],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+        {
+            "id": 1,
+            "title": "HTTP Request Rate (req/s)",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            },
+            "targets": [
+                {
+                    "expr": "rate(http_server_request_duration_seconds_count{job=\"basket-api\"}[1m])",
+                    "legendFormat": "{{method}} {{route}} {{http_response_status_code}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "reqps",
+                    "color": {
+                        "mode": "palette-classic"
+                    }
+                }
+            }
+        },
+        {
+            "id": 2,
+            "title": "HTTP P95 Latency",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 0
+            },
+            "targets": [
+                {
+                    "expr": "histogram_quantile(0.95, rate(http_server_request_duration_seconds_bucket{job=\"basket-api\"}[1m]))",
+                    "legendFormat": "P95 {{route}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s",
+                    "color": {
+                        "mode": "palette-classic"
+                    }
+                }
+            }
+        },
+        {
+            "id": 3,
+            "title": "HTTP Error Rate (5xx)",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 8
+            },
+            "targets": [
+                {
+                    "expr": "rate(http_server_request_duration_seconds_count{job=\"basket-api\",http_response_status_code=~\"5..\"}[1m])",
+                    "legendFormat": "{{method}} {{route}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "reqps",
+                    "color": {
+                        "fixedColor": "red",
+                        "mode": "fixed"
+                    }
+                }
+            }
+        },
+        {
+            "id": 4,
+            "title": ".NET GC Heap Size",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 8
+            },
+            "targets": [
+                {
+                    "expr": "dotnet_gc_heap_size_bytes{job=\"basket-api\"}",
+                    "legendFormat": "Generation {{generation}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "bytes",
+                    "color": {
+                        "mode": "palette-classic"
+                    }
+                }
+            }
+        },
+        {
+            "id": 5,
+            "title": "Active HTTP Connections",
+            "type": "stat",
+            "gridPos": {
+                "h": 4,
+                "w": 6,
+                "x": 0,
+                "y": 16
+            },
+            "targets": [
+                {
+                    "expr": "http_server_active_requests{job=\"basket-api\"}",
+                    "legendFormat": "Active",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "short",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 50
+                            },
+                            {
+                                "color": "red",
+                                "value": 100
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": 6,
+            "title": ".NET Thread Pool Queue Length",
+            "type": "stat",
+            "gridPos": {
+                "h": 4,
+                "w": 6,
+                "x": 6,
+                "y": 16
+            },
+            "targets": [
+                {
+                    "expr": "dotnet_thread_pool_queue_length{job=\"basket-api\"}",
+                    "legendFormat": "Queue",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "short",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 10
+                            },
+                            {
+                                "color": "red",
+                                "value": 50
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "id": 7,
+            "title": ".NET CPU Usage",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 16
+            },
+            "targets": [
+                {
+                    "expr": "rate(process_cpu_seconds_total{job=\"basket-api\"}[1m])",
+                    "legendFormat": "CPU",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percentunit",
+                    "color": {
+                        "fixedColor": "blue",
+                        "mode": "fixed"
+                    }
+                }
+            }
+        },
+        {
+            "id": 8,
+            "title": "Container Logs",
+            "type": "logs",
+            "gridPos": {
+                "h": 10,
+                "w": 24,
+                "x": 0,
+                "y": 24
+            },
+            "targets": [
+                {
+                    "expr": "{service=\"basket-api\"}",
+                    "refId": "A",
+                    "datasource": {
+                        "type": "loki",
+                        "uid": "loki"
+                    }
+                }
+            ],
+            "options": {
+                "showTime": true,
+                "showLabels": false,
+                "wrapLogMessage": false,
+                "sortOrder": "Descending"
+            }
+        },
+        {
+            "id": 9,
+            "title": "Vector Events In/Out",
+            "type": "timeseries",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 34
+            },
+            "targets": [
+                {
+                    "expr": "rate(vector_events_in_total[1m])",
+                    "legendFormat": "Events In",
+                    "refId": "A"
+                },
+                {
+                    "expr": "rate(vector_events_out_total[1m])",
+                    "legendFormat": "Events Out",
+                    "refId": "B"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "pps",
+                    "color": {
+                        "mode": "palette-classic"
+                    }
+                }
+            }
+        },
+        {
+            "id": 10,
+            "title": "Sentry Issues (New)",
+            "type": "stat",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 34
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "grafana-sentry-datasource",
+                        "uid": "Sentry"
+                    },
+                    "queryType": "issues",
+                    "refId": "A"
+                }
+            ],
+             "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 1
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

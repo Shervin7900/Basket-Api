@@ -1,0 +1,25 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false
+
+  - name: Sentry
+    type: grafana-sentry-datasource
+    access: proxy
+    url: https://sentry.io
+    jsonData:
+      orgSlug: ${SENTRY_ORG_SLUG:-}
+    secureJsonData:
+      authToken: ${SENTRY_AUTH_TOKEN:-}
+    editable: true

@@ -8,6 +8,7 @@ services:
     environment:
       - ConnectionStrings__Redis=redis:6379
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=BasketApi;User Id=sa;Password=Password123!;TrustServerCertificate=True
+      - SENTRY_DSN=${SENTRY_DSN:-}
     depends_on:
       redis:
         condition: service_healthy
@@ -47,6 +48,69 @@ services:
     networks:
       - basket-network
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: basket-prometheus
+    restart: always
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    networks:
+      - basket-network
+
+  loki:
+    image: grafana/loki:2.9.4
+    container_name: basket-loki
+    restart: always
+    volumes:
+      - ./config/loki/loki.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+    command: -config.file=/etc/loki/config.yml
+    networks:
+      - basket-network
+
+  vector:
+    image: timberio/vector:0.38.0-alpine
+    container_name: basket-vector
+    restart: always
+    volumes:
+      - ./config/vector/vector.yaml:/etc/vector/vector.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: ["--config", "/etc/vector/vector.yaml"]
+    depends_on:
+      - loki
+    networks:
+      - basket-network
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: basket-grafana
+    restart: always
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_INSTALL_PLUGINS=grafana-sentry-datasource
+    volumes:
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - basket-network
+
 networks:
   basket-network:
     driver: bridge
+
+volumes:
+  prometheus-data:
+  loki-data:
+  grafana-data:
