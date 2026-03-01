@@ -22,27 +22,15 @@ builder.Services.AddBaseInfrastructure(builder.Configuration);
 // Register DDD Repository
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
-// Add FastEndpoints
-builder.Services.AddFastEndpoints();
-builder.Services.SwaggerDocument(o =>
-{
-    o.DocumentSettings = s =>
-    {
-        s.Title = "Basket API";
-        s.Version = "v1";
-    };
-});
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseBaseInfrastructure();
+app.UseStaticFiles();
+app.UseBaseInfrastructure("Basket API", "Basket API - Inventory & Shopping");
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerGen();
 }
-
-app.UseFastEndpoints();
 
 app.Run();
