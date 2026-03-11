@@ -1,5 +1,6 @@
 # Build Stage
 FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
+RUN apk update && apk upgrade
 WORKDIR /src
 
 # Copy all source
@@ -11,6 +12,7 @@ RUN dotnet publish "BasketApi.csproj" -c Release -o /app/publish /p:UseAppHost=f
 
 # Runtime Stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine AS final
+RUN apk update && apk upgrade
 WORKDIR /app
 
 # Use built-in non-root user for security
