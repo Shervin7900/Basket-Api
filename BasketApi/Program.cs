@@ -19,6 +19,9 @@ builder.WebHost.UseSentry(o =>
 // Add BaseInfrastructure (Redis, Health, etc. from BaseApi submodule)
 builder.Services.AddBaseInfrastructure(builder.Configuration);
 
+// Add Consul
+builder.Services.AddConsulConfig(builder.Configuration);
+
 // Register DDD Repository
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
@@ -27,6 +30,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.UseStaticFiles();
 app.UseBaseInfrastructure("Basket API", "Basket API - Inventory & Shopping");
+
+// Register with Consul
+app.RegisterWithConsul(builder.Configuration, app.Lifetime);
 
 if (app.Environment.IsDevelopment())
 {
