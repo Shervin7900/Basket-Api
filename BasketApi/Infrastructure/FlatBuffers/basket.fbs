@@ -1,0 +1,16 @@
+namespace BasketApi.Infrastructure.FlatBuffers;
+
+table BasketItemFB {
+  product_id:string;
+  product_name:string;
+  price:double;
+  quantity:int;
+}
+
+table BasketFB {
+  buyer_id:string;
+  items:[BasketItemFB];
+  total_price:double;
+}
+
+root_type BasketFB;
