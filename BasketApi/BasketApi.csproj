@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="8.0.1" />
+    <PackageReference Include="FastEndpoints" Version="8.1.0" />
     <PackageReference Include="FastEndpoints.Swagger" Version="8.0.1" />
     <PackageReference Include="Google.FlatBuffers" Version="25.2.10" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
